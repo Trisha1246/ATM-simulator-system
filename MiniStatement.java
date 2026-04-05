@@ -1,77 +1,133 @@
-package bank.management.system;
+package atm.simulator.system;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import java.sql.*;
+import java.awt.*;
+import java.sql.ResultSet;
 
-public class MiniStatement extends JFrame implements ActionListener {
+public class MiniStatement extends JFrame {
 
-    JButton b1;
-    JLabel l1;
+    String cardno;
 
-    MiniStatement(String pin) {
-        super("Mini Statement");
-        getContentPane().setBackground(Color.WHITE);
-        setSize(400, 600);
-        setLocation(20, 20);
-        setLayout(null);
+    MiniStatement(String cardno) {
+        this.cardno = cardno;
 
-        l1 = new JLabel();
-        l1.setBounds(20, 140, 400, 200);
-        add(l1);
+        //  Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); 
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(0, 102, 204),
+                        0, getHeight(),
+                        new Color(0, 204, 153));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(null);
+        setContentPane(panel);
 
-        JLabel l2 = new JLabel("Indian Bank");
-        l2.setBounds(150, 20, 100, 20);
-        add(l2);
+        //  Card Panel
+        JPanel card = new JPanel();
+        card.setLayout(null);
+        card.setBackground(Color.WHITE);
+        card.setBounds(40, 20, 720, 400);
+        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        panel.add(card);
 
-        JLabel l3 = new JLabel();
-        l3.setBounds(20, 80, 300, 20);
-        add(l3);
+        //  Title
+        JLabel heading = new JLabel("📄 Mini Statement");
+        heading.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        heading.setBounds(250, 10, 300, 30);
+        card.add(heading);
 
-        JLabel l4 = new JLabel();
-        l4.setBounds(20, 400, 300, 20);
-        add(l4);
+        // Card Number
+        JLabel cardLabel = new JLabel("Card: XXXX-XXXX-XXXX-" + cardno.substring(cardno.length() - 4));
+        cardLabel.setBounds(30, 50, 400, 20);
+        cardLabel.setForeground(Color.GRAY);
+        card.add(cardLabel);
+
+        //  Text Area (Styled)
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        area.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        area.setBackground(new Color(245, 245, 245));
+
+        JScrollPane pane = new JScrollPane(area);
+        pane.setBounds(30, 80, 660, 230);
+        pane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        card.add(pane);
+
+        int balance = 0;
 
         try {
             Conn c = new Conn();
-            ResultSet rs = c.s.executeQuery("SELECT * FROM login WHERE pin = '" + pin + "'");
-            while (rs.next()) {
-                l3.setText("Card Number: " + rs.getString("cardnumber").substring(0, 4) + "XXXXXXXX" + rs.getString("cardnumber").substring(12));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            ResultSet rs = c.s.executeQuery(
+                    "select * from bank where card_number = '" + cardno + "'"
+            );
 
-        try {
-            int balance = 0;
-            Conn c1 = new Conn();
-            ResultSet rs = c1.s.executeQuery("SELECT * FROM bank WHERE pinnumber = '" + pin + "'");
+            //  Header
+            area.append(String.format("%-25s %-12s %-10s\n", "Date", "Type", "Amount"));
+            area.append("--------------------------------------------------------------\n");
+
             while (rs.next()) {
-                l1.setText(l1.getText() + "<html>" + rs.getString("date") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + rs.getString("type") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + rs.getString("amount") + "<br><br></html>");
-                if (rs.getString("type").equals("Deposit")) {
-                    balance += Integer.parseInt(rs.getString("amount"));
+
+                String date = rs.getString("date");
+                String type = rs.getString("type");
+                String amount = rs.getString("amount");
+
+                //  Proper alignment
+                area.append(String.format("%-25s %-12s ₹%-10s\n", date, type, amount));
+
+                if (type.equals("Deposit")) {
+                    balance += Integer.parseInt(amount);
                 } else {
-                    balance -= Integer.parseInt(rs.getString("amount"));
+                    balance -= Integer.parseInt(amount);
                 }
             }
-            l4.setText("Your total Balance is Rs " + balance);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        b1 = new JButton("Exit");
-        b1.setBounds(20, 500, 100, 25);
-        add(b1);
+        //  Balance Label
+        JLabel bal = new JLabel("Current Balance: ₹ " + balance);
+        bal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        bal.setForeground(new Color(0, 153, 76));
+        bal.setBounds(30, 330, 300, 25);
+        card.add(bal);
 
-        b1.addActionListener(this);
+        //  Back Button
+        JButton back = new JButton("⬅ BACK");
+        back.setBounds(560, 330, 130, 40);
+        styleButton(back, new Color(128, 128, 128));
+        card.add(back);
+
+        back.addActionListener(e -> {
+            setVisible(false);
+            new Transactions(cardno).setVisible(true);
+        });
+
+        setSize(800, 480);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent ae) {
-        this.setVisible(false);
-    }
+    //  Button Style
+    void styleButton(JButton btn, Color color) {
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setFocusPainted(false);
 
-    public static void main(String[] args) {
-        new MiniStatement("").setVisible(true);
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(color.darker());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(color);
+            }
+        });
     }
 }
