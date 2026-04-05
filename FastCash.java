@@ -1,114 +1,157 @@
- package bank.management.system;
+package atm.simulator.system;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
-import java.util.Date; 
+import java.sql.ResultSet;
+import java.util.Date;
 
 public class FastCash extends JFrame implements ActionListener {
 
-    JButton deposit, withdrawl, ministatement, pinchange, fastcash, balanceenquiry, exit;
-    String pinnumber;
+    JButton rs100, rs500, rs1000, rs2000, rs5000, back;
+    String cardno;
 
-    FastCash(String pinnumber) {
-        this.pinnumber = pinnumber;
-        setLayout(null);
+    FastCash(String cardno) {
+        this.cardno = cardno;
 
-        ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/atm.jpg"));
-        Image i2 = i1.getImage().getScaledInstance(900, 900, Image.SCALE_DEFAULT);
-        ImageIcon i3 = new ImageIcon(i2);
-        JLabel image = new JLabel(i3);
-        image.setBounds(0, 0, 900, 900);
-        add(image);
+        //  Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); 
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(0, 102, 204),
+                        0, getHeight(),
+                        new Color(0, 204, 153));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(null);
+        setContentPane(panel);
 
-        JLabel text = new JLabel("SELECT WITHDRAWAL AMOUNT");
-        text.setBounds(210, 300, 700, 35);
-        text.setForeground(Color.WHITE);
-        text.setFont(new Font("System", Font.BOLD, 16));
-        image.add(text);
+        //  Card Panel
+        JPanel card = new JPanel();
+        card.setLayout(null);
+        card.setBackground(Color.WHITE);
+        card.setBounds(60, 30, 680, 320);
+        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        panel.add(card);
 
-        deposit = new JButton("Rs 100");
-        deposit.setBounds(170, 415, 150, 30);
-        deposit.addActionListener(this);
-        image.add(deposit);
+        //  Title
+        JLabel text = new JLabel("⚡ Fast Cash");
+        text.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        text.setBounds(260, 20, 300, 30);
+        card.add(text);
 
-        withdrawl = new JButton("Rs 500");
-        withdrawl.setBounds(355, 415, 150, 30);
-        withdrawl.addActionListener(this);
-        image.add(withdrawl);
+        JLabel subText = new JLabel("Select Withdrawal Amount");
+        subText.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        subText.setBounds(260, 50, 250, 20);
+        subText.setForeground(Color.GRAY);
+        card.add(subText);
 
-        fastcash = new JButton("Rs 1000");
-        fastcash.setBounds(170, 450, 150, 30);
-        fastcash.addActionListener(this);
-        image.add(fastcash);
+        //  Buttons
+        rs100 = createButton("₹ 100", 120, 100, new Color(0, 153, 76));
+        rs500 = createButton("₹ 500", 360, 100, new Color(0, 153, 76));
+        rs1000 = createButton("₹ 1000", 120, 160, new Color(0, 153, 76));
+        rs2000 = createButton("₹ 2000", 360, 160, new Color(0, 153, 76));
+        rs5000 = createButton("₹ 5000", 120, 220, new Color(0, 153, 76));
+        back = createButton("⬅ BACK", 360, 220, new Color(128, 128, 128));
 
-        ministatement = new JButton("Rs 2000");
-        ministatement.setBounds(355, 450, 150, 30);
-        ministatement.addActionListener(this);
-        image.add(ministatement);
+        card.add(rs100);
+        card.add(rs500);
+        card.add(rs1000);
+        card.add(rs2000);
+        card.add(rs5000);
+        card.add(back);
 
-        pinchange = new JButton("Rs 5000");
-        pinchange.setBounds(170, 485, 150, 30);
-        pinchange.addActionListener(this);
-        image.add(pinchange);
+        // Action listeners
+        rs100.addActionListener(this);
+        rs500.addActionListener(this);
+        rs1000.addActionListener(this);
+        rs2000.addActionListener(this);
+        rs5000.addActionListener(this);
+        back.addActionListener(this);
 
-        balanceenquiry = new JButton("Rs 10000");
-        balanceenquiry.setBounds(355, 485, 150, 30);
-        balanceenquiry.addActionListener(this);
-        image.add(balanceenquiry);
-
-        exit = new JButton("BACK");
-        exit.setBounds(355, 520, 150, 30);
-        exit.addActionListener(this);
-        image.add(exit);
-
-        setSize(900, 900);
-        setLocation(300, 0);
-        setUndecorated(true);
+        setSize(800, 420);
+        setLocationRelativeTo(null);
         setVisible(true);
-    }     
+    }
+
+    //  Button Styling
+    JButton createButton(String text, int x, int y, Color color) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, 200, 45);
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setFocusPainted(false);
+
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(color.darker());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(color);
+            }
+        });
+
+        return btn;
+    }
 
     public void actionPerformed(ActionEvent ae) {
-        if(ae.getSource() == exit){
+
+        if (ae.getSource() == back) {
             setVisible(false);
-            new Transactions(pinnumber).setVisible(true);
+            new Transactions(cardno).setVisible(true);
+            return;
         }
-        else {
-            String amount = ((JButton)ae.getSource()).getText().substring(3);
+
+        //  Extract amount properly
+        String text = ((JButton) ae.getSource()).getText().replace("₹", "").trim();
+        int amount = Integer.parseInt(text);
+
+        try {
             Conn c = new Conn();
-            try {
-                ResultSet rs = c.s.executeQuery("select * from bank where pinnumber = '"+pinnumber+"'");
-                int balance = 0;
-                while(rs.next()){
-                    if(rs.getString("type").equals("Deposit")) {
-                        balance += Integer.parseInt(rs.getString("amount"));
-                    }
-                    else {
-                        balance -= Integer.parseInt(rs.getString("amount")); 
-                    }
+            ResultSet rs = c.s.executeQuery(
+                    "select * from bank where card_number = '" + cardno + "'"
+            );
+
+            int balance = 0;
+
+            while (rs.next()) {
+                if (rs.getString("type").equals("Deposit")) {
+                    balance += Integer.parseInt(rs.getString("amount"));
+                } else {
+                    balance -= Integer.parseInt(rs.getString("amount"));
                 }
-                if(balance < Integer.parseInt(amount)) {
-                    JOptionPane.showMessageDialog(null, "Insufficient Balance");
-                    return;
-                }
-
-                Date date = new Date();
-                String query = "insert into bank values('"+pinnumber+"', '"+date+"','Withdrawl','"+amount+"')";
-                c.s.executeUpdate(query); 
-
-                JOptionPane.showMessageDialog(null, "Rs " + amount + " Debited Successfully");
-                setVisible(false);
-                new Transactions(pinnumber).setVisible(true);
-
-            } catch (Exception e){
-                System.out.println(e);
             }
-        }
-    }
 
-    public static void main(String[] args) {
-        new FastCash(" ");
+            //  Balance Check
+            if (balance < amount) {
+                JOptionPane.showMessageDialog(null, "Insufficient Balance 💸");
+                return;
+            }
+
+            //  Processing
+            JOptionPane.showMessageDialog(null, "Processing...");
+
+            Date date = new Date();
+
+            String query = "insert into bank values('" + cardno + "','" + date +
+                    "','Withdraw','" + amount + "')";
+
+            c.s.executeUpdate(query);
+
+            JOptionPane.showMessageDialog(null,
+                    "✅ ₹ " + amount + " Withdrawn Successfully");
+
+            setVisible(false);
+            new Transactions(cardno).setVisible(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
- 
