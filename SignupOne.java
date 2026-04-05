@@ -1,4 +1,4 @@
-package bank.management.system;
+package atm.simulator.system;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,199 +7,266 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.event.*;
 
 public class SignupOne extends JFrame implements ActionListener {
-    
+
     long random;
-    JTextField nameTextField, fnameTextField, emailTextField, AddressTextField, CityTextField, StateTextField, PincodeTextField;
+    JTextField nameTextField, fnameTextField, emailTextField,
+            addressTextField, cityTextField, stateTextField, pinTextField;
     JButton next;
     JRadioButton male, female, other, married, unmarried;
     JDateChooser dateChooser;
-    
+
     SignupOne() {
-        setLayout(null); 
-        
+
+        setTitle("Signup - Page 1");
+
+        //  Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(0, 102, 204),
+                        0, getHeight(),
+                        new Color(0, 204, 153));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(new BorderLayout());
+        setContentPane(panel);
+
+        //  Card Panel
+        JPanel card = new JPanel();
+        card.setLayout(null);
+        card.setPreferredSize(new Dimension(650, 900));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        //  Scroll Pane
+        JScrollPane scrollPane = new JScrollPane(card);
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        //  Step Indicator
+        JLabel step = new JLabel("Step 1 of 3");
+        step.setBounds(520, 10, 120, 20);
+        step.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        card.add(step);
+
+        //  Form Number
         Random ran = new Random();
         random = Math.abs((ran.nextLong() % 9000L) + 1000L);
-      
+
         JLabel formno = new JLabel("APPLICATION FORM NO. " + random);
-        formno.setFont(new Font("Raleway", Font.BOLD, 38));
-        formno.setBounds(140, 20, 600, 40);
-        add(formno); 
-        
-        JLabel personDetails = new JLabel("Page 1: Personal Details.....");
-        personDetails.setFont(new Font("Raleway", Font.BOLD, 22));
-        personDetails.setBounds(290, 80, 400, 30);
-        add(personDetails); 
-        
-        JLabel name = new JLabel("Name: ");
-        name.setFont(new Font("Raleway", Font.BOLD, 20));
-        name.setBounds(100, 140, 100, 30);
-        add(name);
-        
-        nameTextField = new JTextField();
-        nameTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        nameTextField.setBounds(300, 140, 400, 30);
-        add(nameTextField);
-        
-        JLabel fname = new JLabel("Father's Name: ");
-        fname.setFont(new Font("Raleway", Font.BOLD, 20));
-        fname.setBounds(100, 190, 200, 30);
-        add(fname);
-        
-        fnameTextField = new JTextField();
-        fnameTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        fnameTextField.setBounds(300, 190, 400, 30);
-        add(fnameTextField);
-        
-        JLabel dob = new JLabel("Date of birth: ");
-        dob.setFont(new Font("Raleway", Font.BOLD, 20));
-        dob.setBounds(100, 240, 200, 30);
-        add(dob);
-        
+        formno.setBounds(120, 40, 400, 30);
+        formno.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        card.add(formno);
+
+        JLabel title = new JLabel("Personal Details");
+        title.setBounds(200, 80, 300, 30);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        card.add(title);
+
+        int y = 140;
+
+        //  Name
+        card.add(label("👤 Name", 50, y));
+        nameTextField = field(250, y);
+        card.add(nameTextField);
+
+        //  Father's Name
+        y += 50;
+        card.add(label("👨 Father's Name", 50, y));
+        fnameTextField = field(250, y);
+        card.add(fnameTextField);
+
+        //  DOB
+        y += 50;
+        card.add(label("🎂 Date of Birth", 50, y));
         dateChooser = new JDateChooser();
-        dateChooser.setBounds(300, 240, 400, 30);
-        dateChooser.setForeground(new Color(105, 105, 105));
-        add(dateChooser);
-        
-        JLabel gender = new JLabel("Gender: ");
-        gender.setFont(new Font("Raleway", Font.BOLD, 20));
-        gender.setBounds(100, 290, 200, 30);
-        add(gender);
-        
+        dateChooser.setBounds(250, y, 300, 30);
+        card.add(dateChooser);
+
+        //  Gender
+        y += 50;
+        card.add(label("🚻 Gender", 50, y));
+
+        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+        genderPanel.setBounds(250, y, 300, 30);
+        genderPanel.setBackground(Color.WHITE);
+
         male = new JRadioButton("Male");
-        male.setBounds(300, 290, 60, 30);
-        male.setBackground(Color.WHITE);
-        add(male);
-        
         female = new JRadioButton("Female");
-        female.setBounds(450, 290, 120, 30);
+
+        male.setBackground(Color.WHITE);
         female.setBackground(Color.WHITE);
-        add(female);
-        
+
         ButtonGroup gendergroup = new ButtonGroup();
         gendergroup.add(male);
         gendergroup.add(female);
-        
-        JLabel email = new JLabel("Email Address: ");
-        email.setFont(new Font("Raleway", Font.BOLD, 20));
-        email.setBounds(100, 340, 200, 30);
-        add(email);
-        
-        emailTextField = new JTextField();
-        emailTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        emailTextField.setBounds(300, 340, 400, 30);
-        add(emailTextField);
-        
-        JLabel marital = new JLabel("Marital Status: ");
-        marital.setFont(new Font("Raleway", Font.BOLD, 20));
-        marital.setBounds(100, 390, 200, 30);
-        add(marital);
-        
+
+        genderPanel.add(male);
+        genderPanel.add(female);
+        card.add(genderPanel);
+
+        //  Email
+        y += 50;
+        card.add(label("📧 Email", 50, y));
+        emailTextField = field(250, y);
+        card.add(emailTextField);
+
+        // Marital Status
+        y += 50;
+        card.add(label("💍 Marital Status", 50, y));
+
+        JPanel maritalPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+        maritalPanel.setBounds(250, y, 350, 30);
+        maritalPanel.setBackground(Color.WHITE);
+
         married = new JRadioButton("Married");
-        married.setBounds(300, 390, 100, 30);
-        married.setBackground(Color.WHITE);
-        add(married);
-        
         unmarried = new JRadioButton("Unmarried");
-        unmarried.setBounds(450, 390, 100, 30);
-        unmarried.setBackground(Color.WHITE);
-        add(unmarried);
-        
         other = new JRadioButton("Other");
-        other.setBounds(630, 390, 100, 30);
+
+        married.setBackground(Color.WHITE);
+        unmarried.setBackground(Color.WHITE);
         other.setBackground(Color.WHITE);
-        add(other);
-        
-        ButtonGroup maritalGroup = new ButtonGroup();
-        maritalGroup.add(married);
-        maritalGroup.add(unmarried);
-        maritalGroup.add(other);
-        
-        JLabel Address = new JLabel("Address: ");
-        Address.setFont(new Font("Raleway", Font.BOLD, 20));
-        Address.setBounds(100, 440, 200, 30);
-        add(Address);
-        
-        AddressTextField = new JTextField();
-        AddressTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        AddressTextField.setBounds(300, 440, 400, 30);
-        add(AddressTextField);
-        
-        JLabel City = new JLabel("City: ");
-        City.setFont(new Font("Raleway", Font.BOLD, 20));
-        City.setBounds(100, 490, 200, 30);
-        add(City);
-        
-        CityTextField = new JTextField();
-        CityTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        CityTextField.setBounds(300, 490, 400, 30);
-        add(CityTextField);
-        
-        JLabel State = new JLabel("State:");
-        State.setFont(new Font("Raleway", Font.BOLD, 20));
-        State.setBounds(100, 540, 200, 30);
-        add(State);
-        
-        StateTextField = new JTextField();
-        StateTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        StateTextField.setBounds(300, 540, 400, 30);
-        add(StateTextField);
-        
-        JLabel Pincode = new JLabel("Pincode :");
-        Pincode.setFont(new Font("Raleway", Font.BOLD, 20));
-        Pincode.setBounds(100, 590, 200, 30);
-        add(Pincode);
-        
-        PincodeTextField = new JTextField();
-        PincodeTextField.setFont(new Font("Raleway", Font.BOLD, 14));
-        PincodeTextField.setBounds(300, 590, 400, 30);
-        add(PincodeTextField);
-        
-        next = new JButton("Next");
-        next.setBackground(Color.BLACK);
+
+        ButtonGroup maritalgroup = new ButtonGroup();
+        maritalgroup.add(married);
+        maritalgroup.add(unmarried);
+        maritalgroup.add(other);
+
+        maritalPanel.add(married);
+        maritalPanel.add(unmarried);
+        maritalPanel.add(other);
+        card.add(maritalPanel);
+
+        //  Address
+        y += 50;
+        card.add(label("🏠 Address", 50, y));
+        addressTextField = field(250, y);
+        card.add(addressTextField);
+
+        // City
+        y += 50;
+        card.add(label("🌆 City", 50, y));
+        cityTextField = field(250, y);
+        card.add(cityTextField);
+
+        //  State
+        y += 50;
+        card.add(label("🏙 State", 50, y));
+        stateTextField = field(250, y);
+        card.add(stateTextField);
+
+        //  PIN
+        y += 50;
+        card.add(label("📍 PIN Code", 50, y));
+        pinTextField = field(250, y);
+        card.add(pinTextField);
+
+        //  NEXT BUTTON
+        y += 70;
+        next = new JButton("NEXT ➜");
+        next.setBounds(250, y, 160, 45);
+        next.setBackground(new Color(0, 102, 204));
         next.setForeground(Color.WHITE);
-        next.setFont(new Font("Raleway", Font.BOLD, 14));
-        next.setBounds(620, 660, 80, 30);
+        next.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        next.setFocusPainted(false);
+        addHover(next);
         next.addActionListener(this);
-        add(next);
-        
-        getContentPane().setBackground(Color.WHITE);
-        
+        card.add(next);
+
         setSize(850, 800);
-        setLocation(350, 10);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
-    
-    public void actionPerformed(ActionEvent ae) {
-        String formno = "" + random; 
-        String name = nameTextField.getText();
-        String fname = fnameTextField.getText();
-        String dob = ((JTextField) dateChooser.getDateEditor().getUiComponent()).getText();
-        String gender = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : null);
-        String email = emailTextField.getText();
-        String marital = married.isSelected() ? "Married" : (unmarried.isSelected() ? "Unmarried" : (other.isSelected() ? "Other" : null));
-        String Address = AddressTextField.getText();
-        String City = CityTextField.getText();
-        String State = StateTextField.getText();
-        String pin  = PincodeTextField.getText();
-        
-        try {
-            if(name.equals("")) {
-                JOptionPane.showMessageDialog(null, "Name is Required");
-            } else {
-                Conn c = new Conn();
-                String query = "INSERT INTO signup (formno, name, fname, dob, gender, email, maritial, Address, City, pincode, State) " +
-                               "VALUES ('"+formno+"','"+name+"','"+fname+"','"+dob+"','"+gender+"','"+email+"','"+marital+"','"+Address+"','"+City+"','"+pin+"','"+State+"')";
-                c.s.executeUpdate(query);
-                
-                setVisible(false);
-                new SignupTwo(formno).setVisible(true);
-            }
-        } catch (Exception e){
-            System.out.println(e);
-        }
+
+    //  Label
+    JLabel label(String text, int x, int y) {
+        JLabel l = new JLabel(text);
+        l.setBounds(x, y, 180, 25);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        return l;
     }
-    
-    public static void main(String args[]) {
-        new SignupOne();
+
+    //  TextField
+    JTextField field(int x, int y) {
+        JTextField f = new JTextField();
+        f.setBounds(x, y, 300, 30);
+        f.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        f.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                f.setBorder(BorderFactory.createLineBorder(new Color(0, 102, 204), 2));
+            }
+
+            public void focusLost(FocusEvent e) {
+                f.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        });
+
+        return f;
+    }
+
+    // Hover Effect
+    void addHover(JButton btn) {
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(btn.getBackground().darker());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(new Color(0, 102, 204));
+            }
+        });
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+
+        String formno = "" + random;
+
+        if (nameTextField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Name is required");
+            return;
+        }
+
+        if (!emailTextField.getText().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            JOptionPane.showMessageDialog(null, "Invalid Email");
+            return;
+        }
+
+        if (!pinTextField.getText().matches("\\d{6}")) {
+            JOptionPane.showMessageDialog(null, "PIN must be 6 digits");
+            return;
+        }
+
+        try {
+            Conn c = new Conn();
+
+            String query = "insert into signup values('" + formno + "','" +
+                    nameTextField.getText() + "','" +
+                    fnameTextField.getText() + "','" +
+                    ((JTextField) dateChooser.getDateEditor().getUiComponent()).getText() + "','" +
+                    (male.isSelected() ? "Male" : "Female") + "','" +
+                    emailTextField.getText() + "','" +
+                    (married.isSelected() ? "Married" : unmarried.isSelected() ? "Unmarried" : "Other") + "','" +
+                    addressTextField.getText() + "','" +
+                    cityTextField.getText() + "','" +
+                    pinTextField.getText() + "','" +
+                    stateTextField.getText() + "')";
+
+            c.s.executeUpdate(query);
+
+            JOptionPane.showMessageDialog(null, "Page 1 Completed ✅");
+
+            setVisible(false);
+            new SignupTwo(formno);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
