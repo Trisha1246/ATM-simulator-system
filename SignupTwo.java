@@ -1,188 +1,247 @@
-package bank.management.system;
+package atm.simulator.system;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class SignupTwo extends JFrame implements ActionListener {
-    
-    JTextField pan, aadhar;
+
+    JTextField panTextField, aadharTextField;
+    JRadioButton seniorYes, seniorNo, accYes, accNo;
+    JComboBox<String> religionBox, categoryBox, incomeBox, educationBox, occupationBox;
     JButton next;
-    JRadioButton syes, sno, eYes, eNo;
-    JComboBox religion, category, Occupation, education, income;
     String formno;
-    
+
     SignupTwo(String formno) {
         this.formno = formno;
-        setLayout(null); 
-        
-        setTitle("NEW ACCOUNT APPLICATION FORM - PAGE 2");
-        
-        JLabel additionalDetails = new JLabel("Page 2: Additional Details");
-        additionalDetails.setFont(new Font("Raleway", Font.BOLD, 22));
-        additionalDetails.setBounds(290, 80, 400, 30);
-        add(additionalDetails); 
-        
-        JLabel name = new JLabel("Religion: ");
-        name.setFont(new Font("Raleway", Font.BOLD, 20));
-        name.setBounds(100, 140, 100, 30);
-        add(name);
-        
-        String valReligion[] = {"Hindu", "Muslim", "Sikh", "Christian","Other"};
-        religion = new JComboBox(valReligion);
-        religion.setBounds(300, 140, 400, 30);
-        religion.setBackground(Color.WHITE);
-        add(religion);
-        
-        JLabel fname = new JLabel("Category: ");
-        fname.setFont(new Font("Raleway", Font.BOLD, 20));
-        fname.setBounds(100, 190, 200, 30);
-        add(fname);
-        
-        String valCategory[] = {"General","OBC","SC","ST","Other"};
-        category = new JComboBox(valCategory);
-        category.setBounds(300, 190, 400, 30);
-        category.setBackground(Color.WHITE);
-        add(category);
-        
-        JLabel dob = new JLabel("Income: ");
-        dob.setFont(new Font("Raleway", Font.BOLD, 20));
-        dob.setBounds(100, 240, 200, 30);
-        add(dob);
-        
-        String incomeCategory[] = {"NULL","<1,50,000","< 2,50,000","<5,00,000","Upto 10,00,000"};
-        income = new JComboBox(incomeCategory);
-        income.setBounds(300, 240, 400, 30);
-        income.setBackground(Color.WHITE);
-        add(income);
-        
-        JLabel gender = new JLabel("Educational ");
-        gender.setFont(new Font("Raleway", Font.BOLD, 20));
-        gender.setBounds(100, 290, 200, 30);
-        add(gender);
-        
-        JLabel email = new JLabel("Qualification: ");
-        email.setFont(new Font("Raleway", Font.BOLD, 20));
-        email.setBounds(100, 315, 200, 30);
-        add(email);
-        
-        String educationValues[] = {"Non-Graduation","Graduate","Post Graduate","Doctorate","Others"};
-        education = new JComboBox(educationValues);
-        education.setBounds(300, 315, 400, 30);
-        education.setBackground(Color.WHITE);
-        add(education);
-        
-        JLabel marital = new JLabel("Occupation: ");
-        marital.setFont(new Font("Raleway", Font.BOLD, 20));
-        marital.setBounds(100, 390, 200, 30);
-        add(marital);
-        
-        String occupationValues[] = {"Salaried","Self-Employed","Business","Student","Retired","Other"};
-        Occupation = new JComboBox(occupationValues);
-        Occupation.setBounds(300, 390, 400, 30);
-        Occupation.setBackground(Color.WHITE);
-        add(Occupation);
-        
-        JLabel Address = new JLabel("PAN NO: ");
-        Address.setFont(new Font("Raleway", Font.BOLD, 20));
-        Address.setBounds(100, 440, 200, 30);
-        add(Address);
-        
-        pan = new JTextField();
-        pan.setFont(new Font("Raleway", Font.BOLD, 14));
-        pan.setBounds(300, 440, 400, 30);
-        add(pan);
-        
-        JLabel City = new JLabel("Aadhar No: ");
-        City.setFont(new Font("Raleway", Font.BOLD, 20));
-        City.setBounds(100, 490, 200, 30);
-        add(City);
-        
-        aadhar = new JTextField();
-        aadhar.setFont(new Font("Raleway", Font.BOLD, 14));
-        aadhar.setBounds(300, 490, 400, 30);
-        add(aadhar);
-        
-        JLabel State = new JLabel("Senior citizen:");
-        State.setFont(new Font("Raleway", Font.BOLD, 20));
-        State.setBounds(100, 540, 200, 30);
-        add(State);
-        
-        syes = new JRadioButton("Yes");
-        syes.setBounds(300, 540, 100, 30);
-        syes.setBackground(Color.WHITE);
-        add(syes);
-        
-        sno = new JRadioButton("No");
-        sno.setBounds(450, 540, 100, 30);
-        sno.setBackground(Color.WHITE);
-        add(sno);
-        
+
+        //  Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(102, 126, 234),
+                        0, getHeight(),
+                        new Color(118, 75, 162));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(null);
+        setContentPane(panel);
+
+        // Card Panel
+        JPanel card = new JPanel();
+        card.setLayout(null);
+        card.setBackground(Color.WHITE);
+        card.setBounds(80, 30, 680, 650);
+        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        panel.add(card);
+
+        //  Step Indicator
+        JLabel step = new JLabel("Step 2 of 3");
+        step.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        step.setBounds(520, 10, 120, 20);
+        card.add(step);
+
+        //  Title
+        JLabel title = new JLabel("Additional Details");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setBounds(200, 40, 300, 30);
+        card.add(title);
+
+        int y = 100;
+
+        //  Religion
+        card.add(label("Religion", 50, y));
+        religionBox = combo(new String[]{"Hindu", "Muslim", "Christian", "Sikh", "Other"}, 250, y);
+        card.add(religionBox);
+
+        // Category
+        y += 50;
+        card.add(label("Category", 50, y));
+        categoryBox = combo(new String[]{"General", "OBC", "SC", "ST", "Other"}, 250, y);
+        card.add(categoryBox);
+
+        //  Income
+        y += 50;
+        card.add(label("Income", 50, y));
+        incomeBox = combo(new String[]{"<1,50,000", "<2,50,000", "<5,00,000", "Above 5,00,000"}, 250, y);
+        card.add(incomeBox);
+
+        //  Education
+        y += 50;
+        card.add(label("Education", 50, y));
+        educationBox = combo(new String[]{"Non-Graduate", "Graduate", "Post-Graduate", "Doctorate"}, 250, y);
+        card.add(educationBox);
+
+        //  Occupation
+        y += 50;
+        card.add(label("Occupation", 50, y));
+        occupationBox = combo(new String[]{"Salaried", "Self-Employed", "Business", "Student", "Retired"}, 250, y);
+        card.add(occupationBox);
+
+        //  PAN
+        y += 50;
+        card.add(label("PAN Number", 50, y));
+        panTextField = field(250, y);
+        card.add(panTextField);
+
+        // Aadhaar
+        y += 50;
+        card.add(label("Aadhaar Number", 50, y));
+        aadharTextField = field(250, y);
+        card.add(aadharTextField);
+
+        //  Senior Citizen
+        y += 50;
+        card.add(label("Senior Citizen", 50, y));
+
+        seniorYes = radio("Yes", 250, y);
+        seniorNo = radio("No", 330, y);
+
         ButtonGroup seniorGroup = new ButtonGroup();
-        seniorGroup.add(syes);
-        seniorGroup.add(sno);
-        
-        JLabel Pincode = new JLabel("Existing Account:");
-        Pincode.setFont(new Font("Raleway", Font.BOLD, 20));
-        Pincode.setBounds(100, 590, 200, 30);
-        add(Pincode);
-        
-        eYes = new JRadioButton("Yes");
-        eYes.setBounds(300, 590, 100, 30);
-        eYes.setBackground(Color.WHITE);
-        add(eYes);
-        
-        eNo = new JRadioButton("No");
-        eNo.setBounds(450, 590, 100, 30);
-        eNo.setBackground(Color.WHITE);
-        add(eNo);
-        
-        ButtonGroup existingGroup = new ButtonGroup();
-        existingGroup.add(eYes);
-        existingGroup.add(eNo);
-        
-        next = new JButton("Next");
-        next.setBackground(Color.BLACK);
+        seniorGroup.add(seniorYes);
+        seniorGroup.add(seniorNo);
+
+        card.add(seniorYes);
+        card.add(seniorNo);
+
+        //  Existing Account
+        y += 50;
+        card.add(label("Existing Account", 50, y));
+
+        accYes = radio("Yes", 250, y);
+        accNo = radio("No", 330, y);
+
+        ButtonGroup accGroup = new ButtonGroup();
+        accGroup.add(accYes);
+        accGroup.add(accNo);
+
+        card.add(accYes);
+        card.add(accNo);
+
+        // NEXT BUTTON
+        y += 70;
+        next = new JButton("NEXT ➜");
+        next.setBounds(250, y, 160, 45);
+        next.setBackground(new Color(102, 126, 234));
         next.setForeground(Color.WHITE);
-        next.setFont(new Font("Raleway", Font.BOLD, 14));
-        next.setBounds(620, 660, 80, 30);
+        next.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        next.setFocusPainted(false);
+        addHover(next);
         next.addActionListener(this);
-        add(next);
-        
-        getContentPane().setBackground(Color.WHITE);
-        
-        setSize(850, 800);
-        setLocation(350, 10);
+        card.add(next);
+
+        setSize(850, 750);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
-    
+
+    //  Label
+    JLabel label(String text, int x, int y) {
+        JLabel l = new JLabel(text);
+        l.setBounds(x, y, 150, 25);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        return l;
+    }
+
+    //  ComboBox
+    JComboBox<String> combo(String[] items, int x, int y) {
+        JComboBox<String> c = new JComboBox<>(items);
+        c.setBounds(x, y, 300, 30);
+        return c;
+    }
+
+    // TextField with focus effect
+    JTextField field(int x, int y) {
+        JTextField f = new JTextField();
+        f.setBounds(x, y, 300, 30);
+
+        f.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                f.setBorder(BorderFactory.createLineBorder(new Color(102, 126, 234), 2));
+            }
+
+            public void focusLost(FocusEvent e) {
+                f.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        });
+
+        return f;
+    }
+
+    //  Radio Button
+    JRadioButton radio(String text, int x, int y) {
+        JRadioButton r = new JRadioButton(text);
+        r.setBounds(x, y, 80, 30);
+        r.setBackground(Color.WHITE);
+        return r;
+    }
+
+    //  Hover Effect
+    void addHover(JButton btn) {
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(btn.getBackground().darker());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(new Color(102, 126, 234));
+            }
+        });
+    }
+
+    // PAN VALIDATION
+    public boolean isValidPAN(String pan) {
+        return pan.matches("[A-Z]{5}[0-9]{4}[A-Z]");
+    }
+
+    // Aadhaar VALIDATION
+    public boolean isValidAadhaar(String aadhar) {
+        return aadhar.matches("\\d{12}");
+    }
+
     public void actionPerformed(ActionEvent ae) {
-        String sreligion = (String) religion.getSelectedItem();
-        String scategory = (String) category.getSelectedItem();
-        String sincome = (String) income.getSelectedItem();
-        String seducation = (String) education.getSelectedItem();
-        String sOccupationValue = (String) Occupation.getSelectedItem();
-        
-        String seniorCitizen = syes.isSelected() ? "Yes" : "No";
-        String existingAccount = eYes.isSelected() ? "Yes" : "No";
-        
-        String span = pan.getText();
-        String saadhar = aadhar.getText();
-        
+
+        String pan = panTextField.getText().toUpperCase();
+        panTextField.setText(pan);
+
+        String aadhar = aadharTextField.getText();
+
+        if (!isValidPAN(pan)) {
+            JOptionPane.showMessageDialog(null, "Invalid PAN (ABCDE1234F)");
+            return;
+        }
+
+        if (!isValidAadhaar(aadhar)) {
+            JOptionPane.showMessageDialog(null, "Invalid Aadhaar (12 digits)");
+            return;
+        }
+
         try {
             Conn c = new Conn();
-            String query = "INSERT INTO signuptwo (formno, religion, category, income, education, occupation, pan, aadhar, seniorcitizen, existingaccount) " +
-                           "VALUES ('"+formno+"','"+sreligion+"','"+scategory+"','"+sincome+"','"+seducation+"','"+sOccupationValue+"','"+span+"','"+saadhar+"','"+seniorCitizen+"','"+existingAccount+"')";
+
+            String query = "insert into signuptwo values('" + formno + "','" +
+                    religionBox.getSelectedItem() + "','" +
+                    categoryBox.getSelectedItem() + "','" +
+                    incomeBox.getSelectedItem() + "','" +
+                    educationBox.getSelectedItem() + "','" +
+                    occupationBox.getSelectedItem() + "','" +
+                    pan + "','" + aadhar + "','" +
+                    (seniorYes.isSelected() ? "Yes" : "No") + "','" +
+                    (accYes.isSelected() ? "Yes" : "No") + "')";
+
             c.s.executeUpdate(query);
-            
+
+            JOptionPane.showMessageDialog(null, "Page 2 Completed ✅");
+
             setVisible(false);
-            new SignupThree(formno).setVisible(true);
-        } catch (Exception e){
-            System.out.println(e);
+            new SignupThree(formno);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-    
-    public static void main(String args[]) {
-        new SignupTwo("");
     }
 }
