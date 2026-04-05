@@ -1,107 +1,192 @@
-package bank.management.system;
+package atm.simulator.system;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
+import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener {
- 
+
     JButton login, signup, clear;
     JTextField cardTextField;
     JPasswordField pinTextField;
-    
+    JCheckBox showPin;
+
     Login() {
-        setTitle("AUTOMATED TELLER MACHINE");
-        setLayout(null);
 
-        ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/logo.jpg"));
-        Image i2 = i1.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        ImageIcon i3 = new ImageIcon(i2);
-        JLabel label = new JLabel(i3);
-        label.setBounds(70, 10, 100, 100);
-        add(label);
+        setTitle("ATM LOGIN");
 
+        // Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); // ✅ FIX
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(58, 123, 213),
+                        0, getHeight(),
+                        new Color(58, 213, 178));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(null);
+        setContentPane(panel);
+
+        //  Card Panel
+        JPanel card = new JPanel();
+        card.setLayout(null);
+        card.setBackground(Color.WHITE);
+        card.setBounds(150, 50, 500, 370);
+        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        panel.add(card);
+
+        //  Title
         JLabel text = new JLabel("Welcome to ATM");
-        text.setFont(new Font("Osward", Font.BOLD, 38));
-        text.setBounds(200, 40, 400, 40);
-        add(text);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        text.setBounds(120, 30, 300, 40);
+        card.add(text);
 
-        JLabel cardno = new JLabel("Card No:");
-        cardno.setFont(new Font("Raleway", Font.BOLD, 28));
-        cardno.setBounds(120, 150, 150, 30);
-        add(cardno);
+        // Card Number
+        JLabel cardno = new JLabel("Card Number");
+        cardno.setBounds(50, 110, 150, 25);
+        card.add(cardno);
 
         cardTextField = new JTextField();
-        cardTextField.setBounds(300, 150, 230, 30);
-        cardTextField.setFont(new Font("Arial", Font.BOLD, 14));
-        add(cardTextField);
+        cardTextField.setBounds(200, 110, 220, 35);
+        styleField(cardTextField);
+        cardTextField.setToolTipText("Enter 16-digit card number");
+        card.add(cardTextField);
 
-        JLabel pin = new JLabel("PIN:");
-        pin.setFont(new Font("Raleway", Font.BOLD, 28));
-        pin.setBounds(120, 220, 250, 30);
-        add(pin);
+        //  PIN
+        JLabel pin = new JLabel("PIN");
+        pin.setBounds(50, 170, 150, 25);
+        card.add(pin);
 
         pinTextField = new JPasswordField();
-        pinTextField.setBounds(300, 220, 230, 30);
-        pinTextField.setFont(new Font("Arial", Font.BOLD, 14));
-        add(pinTextField);
+        pinTextField.setBounds(200, 170, 220, 35);
+        styleField(pinTextField);
+        card.add(pinTextField);
 
-        login = new JButton("SIGN IN");
-        login.setBounds(300, 300, 100, 30);
-        login.setBackground(Color.BLACK);
-        login.setForeground(Color.WHITE);
+        //  Show PIN
+        showPin = new JCheckBox("Show PIN");
+        showPin.setBounds(200, 210, 120, 20);
+        showPin.setBackground(Color.WHITE);
+        card.add(showPin);
+
+        showPin.addActionListener(e -> {
+            pinTextField.setEchoChar(showPin.isSelected() ? (char) 0 : '*');
+        });
+
+        //  Buttons
+        login = createButton("LOGIN", 60, 270, new Color(58, 123, 213));
+        clear = createButton("CLEAR", 190, 270, Color.GRAY);
+        signup = createButton("SIGN UP", 320, 270, new Color(58, 213, 178));
+
+        card.add(login);
+        card.add(clear);
+        card.add(signup);
+
         login.addActionListener(this);
-        add(login);
-
-        clear = new JButton("CLEAR");
-        clear.setBounds(430, 300, 100, 30);
-        clear.setBackground(Color.BLACK);
-        clear.setForeground(Color.WHITE);
         clear.addActionListener(this);
-        add(clear);
-
-        signup = new JButton("SIGN UP");
-        signup.setBounds(300, 350, 230, 30);
-        signup.setBackground(Color.BLACK);
-        signup.setForeground(Color.WHITE);
         signup.addActionListener(this);
-        add(signup);
 
-        getContentPane().setBackground(Color.WHITE);
+        //️ Enter Key
+        getRootPane().setDefaultButton(login);
 
-        setSize(800, 400);
+        setSize(800, 480);
+        setLocationRelativeTo(null);
         setVisible(true);
-        setLocation(350, 200);
     }
-    
+
+    void styleField(JTextField field) {
+        field.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        field.setHorizontalAlignment(JTextField.CENTER);
+        field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        field.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                field.setBorder(BorderFactory.createLineBorder(new Color(58, 123, 213), 2));
+            }
+
+            public void focusLost(FocusEvent e) {
+                field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        });
+    }
+
+    //  Button Styling
+    JButton createButton(String text, int x, int y, Color color) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, 120, 40);
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btn.setFocusPainted(false);
+
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(color.darker());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(color);
+            }
+        });
+
+        return btn;
+    }
+
     public void actionPerformed(ActionEvent ae) {
-        if(ae.getSource() == clear) {
+
+        if (ae.getSource() == clear) {
             cardTextField.setText("");
             pinTextField.setText("");
-        } else if (ae.getSource() == login) {
-            Conn conn = new Conn(); 
-            String cardnumber = cardTextField.getText();
-            String pinnumber = pinTextField.getText();
-            String query = "SELECT * FROM login WHERE cardnumber = '"+cardnumber+"' AND pin = '"+pinnumber+"'"; 
-            try {  
-               ResultSet rs = conn.s.executeQuery(query);
-               if(rs.next()) {
-                   setVisible(false);
-                   new Transactions(pinnumber).setVisible(true);
-               } else {
-                  JOptionPane.showMessageDialog(null, "Incorrect Card Number or Pin");
-               }
-            } catch (Exception e) {
-                System.out.println(e);
+        }
+
+        else if (ae.getSource() == login) {
+
+            String cardno = cardTextField.getText().trim();
+            String pin = new String(pinTextField.getPassword()).trim();
+
+            //  Validation
+            if (!cardno.matches("\\d{16}")) {
+                JOptionPane.showMessageDialog(null, "Enter valid 16-digit Card Number");
+                return;
             }
-        } else if (ae.getSource() == signup) {
+
+            if (!pin.matches("\\d{4}")) {
+                JOptionPane.showMessageDialog(null, "PIN must be 4 digits");
+                return;
+            }
+
+            try {
+                Conn c = new Conn();
+
+                String query = "select * from signupthree where card_number = '" 
+                                + cardno + "' and pin = '" + pin + "'";
+
+                ResultSet rs = c.s.executeQuery(query);
+
+                if (rs.next()) {
+                    setVisible(false);
+                    new Transactions(cardno).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Incorrect Card Number or PIN ❌");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if (ae.getSource() == signup) {
             setVisible(false);
             new SignupOne().setVisible(true);
         }
     }
 
     public static void main(String args[]) {
+        
         new Login();
     }
 }
