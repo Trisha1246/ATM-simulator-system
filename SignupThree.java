@@ -1,4 +1,4 @@
-package bank.management.system;
+package atm.simulator.system;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,190 +6,224 @@ import java.awt.event.*;
 import java.util.*;
 
 public class SignupThree extends JFrame implements ActionListener {
-    
-    JRadioButton savingAcc, fixedDepositAcc, currentAcc, recurringDepositAcc;
-    JCheckBox atmCard, internetBanking, mobileBanking, emailAlerts, chequeBook, eStatement, declaration;
+
+    JRadioButton saving, current, fixed, recurring;
+    JCheckBox atm, internet, mobile, email, cheque, eStatement;
     JButton submit, cancel;
     String formno;
-    
+
     SignupThree(String formno) {
         this.formno = formno;
-        setLayout(null); 
-        
-        setTitle("NEW ACCOUNT APPLICATION FORM - PAGE 3");
-        
-        JLabel additionalDetails = new JLabel("Page 3: Account Details");
-        additionalDetails.setFont(new Font("Raleway", Font.BOLD, 22));
-        additionalDetails.setBounds(280, 40, 400, 40);
-        add(additionalDetails); 
-        
-        JLabel accountType = new JLabel("Account Type:");
-        accountType.setFont(new Font("Raleway", Font.BOLD, 18));
-        accountType.setBounds(100, 100, 200, 30);
-        add(accountType);
-        
-        savingAcc = new JRadioButton("Saving Account");
-        savingAcc.setBounds(100, 140, 200, 30);
-        savingAcc.setBackground(Color.WHITE);
-        add(savingAcc);
-        
-        fixedDepositAcc = new JRadioButton("Fixed Deposit Account");
-        fixedDepositAcc.setBounds(350, 140, 250, 30);
-        fixedDepositAcc.setBackground(Color.WHITE);
-        add(fixedDepositAcc);
-        
-        currentAcc = new JRadioButton("Current Account");
-        currentAcc.setBounds(100, 180, 200, 30);
-        currentAcc.setBackground(Color.WHITE);
-        add(currentAcc);
-        
-        recurringDepositAcc = new JRadioButton("Recurring Deposit Account");
-        recurringDepositAcc.setBounds(350, 180, 250, 30);
-        recurringDepositAcc.setBackground(Color.WHITE);
-        add(recurringDepositAcc);
-        
-        ButtonGroup accountGroup = new ButtonGroup();
-        accountGroup.add(savingAcc);
-        accountGroup.add(fixedDepositAcc);
-        accountGroup.add(currentAcc);
-        accountGroup.add(recurringDepositAcc);
-        
-        JLabel cardNumber = new JLabel("Card Number:");
-        cardNumber.setFont(new Font("Raleway", Font.BOLD, 18));
-        cardNumber.setBounds(100, 240, 200, 30);
-        add(cardNumber);
-        
-        JLabel cardValue = new JLabel("XXXX-XXXX-XXXX-4184");
-        cardValue.setFont(new Font("Raleway", Font.BOLD, 18));
-        cardValue.setBounds(330, 240, 250, 30);
-        add(cardValue);
-        
-        JLabel cardNote = new JLabel("Your 16 Digit Card Number");
-        cardNote.setFont(new Font("Raleway", Font.PLAIN, 12));
-        cardNote.setBounds(100, 270, 200, 20);
-        add(cardNote);
-        
-        JLabel pinLabel = new JLabel("PIN:");
-        pinLabel.setFont(new Font("Raleway", Font.BOLD, 18));
-        pinLabel.setBounds(100, 310, 200, 30);
-        add(pinLabel);
-        
-        JLabel pinValue = new JLabel("XXXX");
-        pinValue.setFont(new Font("Raleway", Font.BOLD, 18));
-        pinValue.setBounds(330, 310, 200, 30);
-        add(pinValue);
-        
-        JLabel pinNote = new JLabel("Your 4 Digit Password");
-        pinNote.setFont(new Font("Raleway", Font.PLAIN, 12));
-        pinNote.setBounds(100, 340, 200, 20);
-        add(pinNote);
-        
-        JLabel servicesLabel = new JLabel("Services Required:");
-        servicesLabel.setFont(new Font("Raleway", Font.BOLD, 18));
-        servicesLabel.setBounds(100, 380, 200, 30);
-        add(servicesLabel);
-        
-        atmCard = new JCheckBox("ATM CARD");
-        atmCard.setBounds(100, 420, 200, 30);
-        atmCard.setBackground(Color.WHITE);
-        add(atmCard);
-        
-        internetBanking = new JCheckBox("Internet Banking");
-        internetBanking.setBounds(350, 420, 200, 30);
-        internetBanking.setBackground(Color.WHITE);
-        add(internetBanking);
-        
-        mobileBanking = new JCheckBox("Mobile Banking");
-        mobileBanking.setBounds(100, 460, 200, 30);
-        mobileBanking.setBackground(Color.WHITE);
-        add(mobileBanking);
-        
-        emailAlerts = new JCheckBox("EMAIL & SMS Alerts");
-        emailAlerts.setBounds(350, 460, 200, 30);
-        emailAlerts.setBackground(Color.WHITE);
-        add(emailAlerts);
-        
-        chequeBook = new JCheckBox("Cheque Book");
-        chequeBook.setBounds(100, 500, 200, 30);
-        chequeBook.setBackground(Color.WHITE);
-        add(chequeBook);
-        
-        eStatement = new JCheckBox("E-Statement");
-        eStatement.setBounds(350, 500, 200, 30);
-        eStatement.setBackground(Color.WHITE);
-        add(eStatement);
-        
-        declaration = new JCheckBox("I hereby declare that the above entered details are correct to the best of my knowledge.", false);
-        declaration.setBounds(100, 540, 600, 20);
-        declaration.setBackground(Color.WHITE);
-        add(declaration);
-        
-        submit = new JButton("Submit");
-        submit.setBackground(Color.BLACK);
-        submit.setForeground(Color.WHITE);
-        submit.setFont(new Font("Raleway", Font.BOLD, 14));
-        submit.setBounds(250, 580, 100, 30);
+
+        //  Gradient Background
+        JPanel panel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); 
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0,
+                        new Color(0, 153, 204),
+                        0, getHeight(),
+                        new Color(0, 204, 153));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setLayout(null);
+        setContentPane(panel);
+
+        //  Card Panel
+        JPanel cardPanel = new JPanel();
+        cardPanel.setLayout(null);
+        cardPanel.setBackground(Color.WHITE);
+        cardPanel.setBounds(80, 30, 680, 620);
+        cardPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        panel.add(cardPanel);
+
+        //  Step Indicator
+        JLabel step = new JLabel("Step 3 of 3");
+        step.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        step.setBounds(520, 10, 120, 20);
+        cardPanel.add(step);
+
+        // Title
+        JLabel title = new JLabel("Account Details");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setBounds(220, 40, 300, 30);
+        cardPanel.add(title);
+
+        int y = 100;
+
+        //  Account Type
+        cardPanel.add(label("Account Type", 50, y));
+
+        saving = radio("Saving Account", 250, y);
+        current = radio("Current Account", 250, y + 30);
+        fixed = radio("Fixed Deposit", 250, y + 60);
+        recurring = radio("Recurring Deposit", 250, y + 90);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(saving);
+        group.add(current);
+        group.add(fixed);
+        group.add(recurring);
+
+        cardPanel.add(saving);
+        cardPanel.add(current);
+        cardPanel.add(fixed);
+        cardPanel.add(recurring);
+
+        // Card Number
+        y += 130;
+        cardPanel.add(label("Card Number", 50, y));
+
+        JLabel cardNo = new JLabel("XXXX-XXXX-XXXX-XXXX");
+        cardNo.setBounds(250, y, 300, 25);
+        cardNo.setForeground(Color.GRAY);
+        cardPanel.add(cardNo);
+
+        //  PIN
+        y += 40;
+        cardPanel.add(label("PIN", 50, y));
+
+        JLabel pinNo = new JLabel("XXXX");
+        pinNo.setBounds(250, y, 200, 25);
+        pinNo.setForeground(Color.GRAY);
+        cardPanel.add(pinNo);
+
+        // Services
+        y += 50;
+        cardPanel.add(label("Services Required", 50, y));
+
+        atm = checkbox("ATM Card", 250, y);
+        internet = checkbox("Internet Banking", 400, y);
+        mobile = checkbox("Mobile Banking", 250, y + 40);
+        email = checkbox("Email Alerts", 400, y + 40);
+        cheque = checkbox("Cheque Book", 250, y + 80);
+        eStatement = checkbox("E-Statement", 400, y + 80);
+
+        cardPanel.add(atm);
+        cardPanel.add(internet);
+        cardPanel.add(mobile);
+        cardPanel.add(email);
+        cardPanel.add(cheque);
+        cardPanel.add(eStatement);
+
+        // Buttons
+        submit = createButton("SUBMIT ✔", 200, 500, new Color(0, 153, 204));
+        cancel = createButton("CANCEL ✖", 360, 500, Color.GRAY);
+
+        cardPanel.add(submit);
+        cardPanel.add(cancel);
+
         submit.addActionListener(this);
-        add(submit);
-        
-        cancel = new JButton("Cancel");
-        cancel.setBackground(Color.BLACK);
-        cancel.setForeground(Color.WHITE);
-        cancel.setFont(new Font("Raleway", Font.BOLD, 14));
-        cancel.setBounds(420, 580, 100, 30);
         cancel.addActionListener(this);
-        add(cancel);
-        
-        getContentPane().setBackground(Color.WHITE);
-        setSize(850, 650);
-        setLocation(350, 10);
+
+        setSize(850, 700);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
-    
+
+    //  Label
+    JLabel label(String text, int x, int y) {
+        JLabel l = new JLabel(text);
+        l.setBounds(x, y, 200, 25);
+        l.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        return l;
+    }
+
+    //  Radio
+    JRadioButton radio(String text, int x, int y) {
+        JRadioButton r = new JRadioButton(text);
+        r.setBounds(x, y, 200, 30);
+        r.setBackground(Color.WHITE);
+        return r;
+    }
+
+    //  Checkbox
+    JCheckBox checkbox(String text, int x, int y) {
+        JCheckBox c = new JCheckBox(text);
+        c.setBounds(x, y, 180, 30);
+        c.setBackground(Color.WHITE);
+        return c;
+    }
+
+    //  Button Hover
+    JButton createButton(String text, int x, int y, Color color) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, 150, 45);
+        btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setFocusPainted(false);
+
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(color.darker());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(color);
+            }
+        });
+
+        return btn;
+    }
+
     public void actionPerformed(ActionEvent ae) {
-        if(ae.getSource() == submit) {
-            String atype = null;
-            if(savingAcc.isSelected()) atype = "Saving Account";
-            else if(fixedDepositAcc.isSelected()) atype = "Fixed Deposit Account";
-            else if(currentAcc.isSelected()) atype = "Current Account";
-            else if(recurringDepositAcc.isSelected()) atype = "Recurring Deposit Account";
-            
+
+        if (ae.getSource() == submit) {
+
+            String accountType = null;
+
+            if (saving.isSelected()) accountType = "Saving";
+            else if (current.isSelected()) accountType = "Current";
+            else if (fixed.isSelected()) accountType = "Fixed";
+            else if (recurring.isSelected()) accountType = "Recurring";
+
+            if (accountType == null) {
+                JOptionPane.showMessageDialog(null, "Select Account Type");
+                return;
+            }
+
+            //  Generate card number + pin
             Random ran = new Random();
-            long first7 = (ran.nextLong() % 90000000L) + 5040936000000000L;
-            String cardnumber = "" + Math.abs(first7);
-            
-            long first3 = (ran.nextLong() % 9000L) + 1000L;
-            String pin = "" + Math.abs(first3);
-            
+            String cardNumber = "504093" + (1000000000L + Math.abs(ran.nextLong() % 9000000000L));
+            String pin = String.format("%04d", ran.nextInt(10000));
+
             String facility = "";
-            if(atmCard.isSelected()) facility += " ATM Card";
-            if(internetBanking.isSelected()) facility += " Internet Banking";
-            if(mobileBanking.isSelected()) facility += " Mobile Banking";
-            if(emailAlerts.isSelected()) facility += " EMAIL & SMS Alerts";
-            if(chequeBook.isSelected()) facility += " Cheque Book";
-            if(eStatement.isSelected()) facility += " E-Statement";
-            
+            if (atm.isSelected()) facility += "ATM ";
+            if (internet.isSelected()) facility += "Internet ";
+            if (mobile.isSelected()) facility += "Mobile ";
+            if (email.isSelected()) facility += "Email ";
+            if (cheque.isSelected()) facility += "Cheque ";
+            if (eStatement.isSelected()) facility += "E-Statement ";
+
+            if (facility.equals("")) {
+                JOptionPane.showMessageDialog(null, "Select at least one service");
+                return;
+            }
+
             try {
                 Conn c = new Conn();
-                String q1 = "INSERT INTO signupthree (formno, accounttype, cardnumber, pin, facility) " +
-                            "VALUES ('"+formno+"', '"+atype+"', '"+cardnumber+"', '"+pin+"', '"+facility+"')";
-                String q2 = "INSERT INTO login (formno, cardnumber, pin) " +
-                            "VALUES ('"+formno+"', '"+cardnumber+"', '"+pin+"')";
-                c.s.executeUpdate(q1);
-                c.s.executeUpdate(q2);
-                JOptionPane.showMessageDialog(null, "Card Number: " + cardnumber + "\n Pin: " + pin);
+
+                String query = "insert into signupthree values('"
+                        + formno + "','" + accountType + "','" + cardNumber + "','" + pin + "','" + facility + "')";
+
+                c.s.executeUpdate(query);
+
+                JOptionPane.showMessageDialog(null,
+                        "🎉 Account Created!\n\nCard Number: " + cardNumber + "\nPIN: " + pin);
+
                 setVisible(false);
-                new Transactions(pin).setVisible(true);
-            } catch(Exception e) {
-                System.out.println(e) ;
+                new Login();
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } else if(ae.getSource() == cancel) {
+
+        } else if (ae.getSource() == cancel) {
             setVisible(false);
-            new Login().setVisible(true);
+            new Login();
         }
-    }
-    
-    public static void main(String args[]) {
-        new SignupThree("");
     }
 }
